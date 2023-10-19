@@ -40,7 +40,6 @@ const AppBar = () => {
 
   return (
     <Tab.Navigator
-      style={{ flex: 1 }}
       initialRouteName="Home"
       screenOptions={({ route }) => ({
         tabBarActiveTintColor: "purple",
