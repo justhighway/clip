@@ -3,11 +3,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import AppBar from "./components/AppBar";
 
 const App = () => {
-  return (
-    <NavigationContainer>
-      <AppBar />
-    </NavigationContainer>
-  );
+  return <AppBar />;
 };
 
 export default App;

@@ -1,98 +1,183 @@
-import React, { useMemo } from "react";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { Home, Commuity, Chat, Setting } from "../screens/TabScreen";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { styled } from "styled-components";
+import React from "react";
+import {
+  Alert,
+  Animated,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+  LogBox,
+} from "react-native";
+import { CurvedBottomBarExpo } from "react-native-curved-bottom-bar";
+import Ionicons from "@expo/vector-icons/Ionicons";
+import { NavigationContainer } from "@react-navigation/native";
 
-const Tab = createBottomTabNavigator();
-const TabIcon = ({ name, size, color }) => {
-  return <MaterialCommunityIcons name={name} size={size} color={color} />;
+LogBox.ignoreAllLogs();
+
+const Screen1 = () => {
+  return <View style={styles.screen1} />;
 };
 
-const AddButtonContainer = styled.TouchableOpacity`
-  background-color: purple;
-  border-radius: 30px;
-  padding: 15px;
-  position: absolute;
-  bottom: 20px;
-  align-self: center;
-`;
+const Screen2 = () => {
+  return <View style={styles.screen2} />;
+};
 
-const AddButton = ({ onPress }) => {
+const Screen3 = () => {
+  return <View style={styles.screen3} />;
+};
+
+const Screen4 = () => {
+  return <View style={styles.screen4} />;
+};
+
+export default function AppBar() {
+  const _renderIcon = (routeName, selectedTab) => {
+    let icon = "";
+
+    switch (routeName) {
+      case "title1":
+        icon = "ios-home-outline";
+        break;
+      case "title2":
+        icon = "settings-outline";
+        break;
+      case "title3":
+        icon = "chatbox";
+        break;
+      case "title4":
+        icon = "person-outline";
+        break;
+    }
+
+    return (
+      <Ionicons
+        name={icon}
+        size={30}
+        color={routeName === selectedTab ? "purple" : "gray"}
+      />
+    );
+  };
+  const renderTabBar = ({ routeName, selectedTab, navigate }) => {
+    return (
+      <TouchableOpacity
+        onPress={() => navigate(routeName)}
+        style={styles.tabbarItem}
+      >
+        {_renderIcon(routeName, selectedTab)}
+      </TouchableOpacity>
+    );
+  };
+
   return (
-    <AddButtonContainer onPress={onPress}>
-      <MaterialCommunityIcons name="plus" size={30} color="white" />
-    </AddButtonContainer>
+    <NavigationContainer>
+      <CurvedBottomBarExpo.Navigator
+        type="DOWN"
+        shadowStyle={styles.shawdow}
+        height={100}
+        circleWidth={10}
+        bgColor="white"
+        initialRouteName="title1"
+        renderCircle={({ selectedTab, navigate }) => (
+          <Animated.View style={styles.btnCircleUp}>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => Alert.alert("Click Action")}
+            >
+              <Ionicons name={"add"} color="white" size={40} />
+            </TouchableOpacity>
+          </Animated.View>
+        )}
+        tabBar={renderTabBar}
+      >
+        <CurvedBottomBarExpo.Screen
+          name="title1"
+          position="LEFT"
+          component={() => <Screen1 />}
+        />
+        <CurvedBottomBarExpo.Screen
+          name="title2"
+          position="LEFT"
+          component={() => <Screen2 />}
+        />
+        <CurvedBottomBarExpo.Screen
+          name="title3"
+          component={() => <Screen3 />}
+          position="RIGHT"
+        />
+        <CurvedBottomBarExpo.Screen
+          name="title4"
+          component={() => <Screen4 />}
+          position="RIGHT"
+        />
+      </CurvedBottomBarExpo.Navigator>
+    </NavigationContainer>
   );
-};
+}
 
-const AddScreen = () => null;
-
-const AppBar = () => {
-  const addScreenOptions = useMemo(
-    () => ({
-      tabBarIcon: () => (
-        <AddButton onPress={() => navigation.navigate("AddModal")} />
-      ),
-    }),
-    []
-  );
-
-  return (
-    <Tab.Navigator
-      initialRouteName="Home"
-      screenOptions={({ route }) => ({
-        tabBarActiveTintColor: "purple",
-        tabBarShowLabel: false,
-        tabBarStyle: [
-          {
-            display: "flex",
-          },
-          null,
-        ],
-      })}
-    >
-      <Tab.Screen
-        name="Home"
-        component={Home}
-        options={{
-          tabBarIcon: (props) => TabIcon({ ...props, name: "paperclip" }),
-        }}
-      />
-      <Tab.Screen
-        name="Community"
-        component={Commuity}
-        options={{
-          tabBarIcon: (props) => TabIcon({ ...props, name: "magnify" }),
-        }}
-      />
-      <Tab.Screen
-        name="plus"
-        component={AddScreen}
-        listeners={({ navigation }) => ({
-          tabPress: (e) => {
-            e.preventDefault();
-            navigation.navigate("AddModal");
-          },
-        })}
-        options={addScreenOptions}
-      />
-      <Tab.Screen
-        name="Chat"
-        component={Chat}
-        options={{
-          tabBarIcon: (props) => TabIcon({ ...props, name: "chat" }),
-        }}
-      />
-      <Tab.Screen
-        name="Setting"
-        component={Setting}
-        options={{
-          tabBarIcon: (props) => TabIcon({ ...props, name: "account" }),
-        }}
-      />
-    </Tab.Navigator>
-  );
-};
-
-export default AppBar;
+export const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 10,
+  },
+  shawdow: {
+    shadowColor: "#DDDDDD",
+    shadowOffset: {
+      width: 0,
+      height: 0,
+    },
+    shadowOpacity: 1,
+    shadowRadius: 5,
+  },
+  button: {
+    flex: 1,
+    justifyContent: "center",
+  },
+  bottomBar: {},
+  btnCircleUp: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "purple",
+    bottom: 20,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 1.41,
+    elevation: 1,
+  },
+  imgCircle: {
+    width: 30,
+    height: 30,
+    tintColor: "gray",
+  },
+  tabbarItem: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    bottom: 15,
+  },
+  img: {
+    width: 30,
+    height: 30,
+  },
+  screen1: {
+    flex: 1,
+    backgroundColor: "#BFEFFF",
+  },
+  screen2: {
+    flex: 1,
+    backgroundColor: "#FFEBCD",
+  },
+  screen3: {
+    flex: 1,
+    backgroundColor: "cyan",
+  },
+  screen4: {
+    flex: 1,
+    backgroundColor: "pink",
+  },
+});
